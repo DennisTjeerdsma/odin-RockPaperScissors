@@ -6,6 +6,15 @@ BASED ON THE INPUT OF THE PLAYER AND THE COMPUTER A WINNER WILL BE DETERMINED
 WINNER WILL GAIN 1 POINT
 */
 
+let count = 0
+let playerScore = 0
+let computerScore = 0
+
+let GetPlayerGuess = () => {
+    let guess = prompt('Please enter your guess: ');
+    return guess.toUpperCase();
+}
+
 let GetComputerGuess = () => {
     let guess = Math.floor(Math.random() * 3);
 
@@ -19,42 +28,38 @@ let GetComputerGuess = () => {
     } 
 }
 
-let GetPlayerGuess = () => {
-    let guess = prompt('Please enter your guess: ');
-    return guess.toUpperCase();
-}
-
-let determineWinner = (playerScore, computerScore) => {
-    if (playerScore > computerScore) {
-        alert(`You won the game! Player: ${playerScore}, computer: ${computerScore}`)
-    } else if (playerScore < computerScore) {
-        alert(`You lost the game! Player: ${playerScore}, computer: ${computerScore}`)
-    } else {
-        alert('It\'s a tie!');
-    }
-}
-
-
-count = 0
-playerScore = 0
-computerScore = 0
-
-while (count < 5) {
-    let playerGuess = GetPlayerGuess();
-    let computerGuess = GetComputerGuess();
-
-    if (playerGuess === 'ROCK' && computerGuess === 'ROCK' || playerGuess === 'PAPER' && computerGuess === 'PAPER' || playerGuess === "SCISSORS" && computerGuess === 'SCISSORS') {
-        alert('This round is a tie!')
-    } else if (playerguess = 'ROCK' && computerGuess === 'PAPER' || playerGuess === 'PAPER' && computerGuess === 'SCISSORS' || playerGuess === "SCISSORS" && computerGuess === 'ROCK') {
-        alert("You lost this round!")
-        computerScore++;
-    } else if (playerGuess === 'ROCK' && computerGuess === 'SCISSORS' || playerGuess === 'PAPER' && computerGuess === 'ROCK' || playerGuess === "SCISSORS" && computerGuess === 'PAPER') {
-        alert('You won this round!')
+let playRound = (playerSelection, computerSelection) => {
+    if ((playerSelection === 'ROCK' && computerSelection === 'SCISSORS') || 
+    (playerSelection === 'SCISSORS' && computerSelection === 'PAPER') ||
+    (playerSelection === 'PAPER' && computerSelection === 'ROCK')) {
         playerScore++;
+        return `You Win! ${playerSelection} beats ${computerSelection}`
+    } else if ((computerSelection === 'ROCK' && playerSelection === 'SCISSORS' )||
+            (computerSelection === 'SCISSORS' && playerSelection === 'PAPER' )||
+            (computerSelection === 'PAPER' && playerSelection === 'ROCK')) {
+        computerScore++;
+        return `You Lose! ${computerSelection} beats ${playerSelection}`
+    } else {
+        return 'Tie!';
     }
-
-    count++;
 }
 
-determineWinner(playerScore, computerScore);
+function game() {
+    for (let i = 0; i < 5; i++) {
+        let playerGuess = GetPlayerGuess();
+        let computerGuess = GetComputerGuess();
 
+        let result = playRound(playerGuess, computerGuess);
+        console.log(result)
+    }
+
+    if (playerScore > computerScore) {
+        console.log(`You Win! ${playerScore}:${computerScore}`)
+    } else if (playerScore === computerScore) {
+        console.log("It's a tie!");
+    } else {
+        console.log(`You Lose! ${playerScore}:${computerScore}`)
+   }
+};
+
+game();
