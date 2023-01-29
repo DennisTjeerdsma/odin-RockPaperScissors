@@ -13,7 +13,7 @@ let computerScore = 0
 let GetPlayerGuess = () => {
     let guess = prompt('Please enter your guess: ');
     return guess.toUpperCase();
-}
+};
 
 let GetComputerGuess = () => {
     let guess = Math.floor(Math.random() * 3);
@@ -26,40 +26,78 @@ let GetComputerGuess = () => {
         case 2:
             return 'SCISSORS'   
     } 
-}
+};
 
-let playRound = (playerSelection, computerSelection) => {
+let playRound = (event) => {
+    let computerSelection = GetComputerGuess();
+    let playerSelection = event.target.id.toUpperCase();
+
     if ((playerSelection === 'ROCK' && computerSelection === 'SCISSORS') || 
     (playerSelection === 'SCISSORS' && computerSelection === 'PAPER') ||
     (playerSelection === 'PAPER' && computerSelection === 'ROCK')) {
         playerScore++;
-        return `You Win! ${playerSelection} beats ${computerSelection}`
+        displayResult(`You Win! ${playerSelection} beats ${computerSelection}`, 1);
     } else if ((computerSelection === 'ROCK' && playerSelection === 'SCISSORS' )||
             (computerSelection === 'SCISSORS' && playerSelection === 'PAPER' )||
             (computerSelection === 'PAPER' && playerSelection === 'ROCK')) {
         computerScore++;
-        return `You Lose! ${computerSelection} beats ${playerSelection}`
+        displayResult(`You Lose! ${computerSelection} beats ${playerSelection}`, 2);
     } else {
-        return 'Tie!';
+        displayResult('Tie!', 0);
+    };
+};
+
+let displayResult = (text, colorCode) => {
+    const temp = document.createElement('p');
+    const resultsElement = document.getElementById('results');
+    temp.textContent = text;
+
+    if (colorCode === 1) {
+        temp.style.color = 'green';
+        document.getElementById('playerScore').textContent = playerScore;
+    } else if (colorCode === 2) {
+        temp.style.color = 'red';
+        document.getElementById('computerScore').textContent = computerScore;;
     }
+    else {temp.style.color = 'orange'};
+    resultsElement.appendChild(temp);
+
+    if (playerScore === 5) {
+        const temp2 = document.createElement('p');
+        temp2.textContent = 'You win the game!';
+        temp2.style.color = 'green';
+        temp2.style.fontSize =20;
+        resultsElement.appendChild(temp2);
+    } else if (computerScore === 5) {
+        const temp2 = document.createElement('p');
+        temp2.textContent = 'You lose the game!';
+        temp2.style.color = 'red';
+        temp2.style.fontSize =20;
+        resultsElement.appendChild(temp2);
+    }; 
+}
+
+function resetGame() {
+    count = 0;
+    playerScore = 0;
+    computerScore = 0;
+    document.getElementById('playerScore').textContent = playerScore;
+    document.getElementById('computerScore').textContent = computerScore;;
+
 }
 
 function game() {
-    for (let i = 0; i < 5; i++) {
-        let playerGuess = GetPlayerGuess();
-        let computerGuess = GetComputerGuess();
 
-        let result = playRound(playerGuess, computerGuess);
-        console.log(result)
-    }
 
-    if (playerScore > computerScore) {
-        console.log(`You Win! ${playerScore}:${computerScore}`)
-    } else if (playerScore === computerScore) {
-        console.log("It's a tie!");
-    } else {
-        console.log(`You Lose! ${playerScore}:${computerScore}`)
-   }
+    const buttonElements = document.querySelectorAll('.btn');
+    let playing = true;
+    
+    buttonElements.forEach(btn => {
+        btn.addEventListener('click', playRound);
+    });
+
+    const resetButton = document.querySelector('#reset');
+    resetButton.addEventListener('click', resetGame);
 };
 
 game();
